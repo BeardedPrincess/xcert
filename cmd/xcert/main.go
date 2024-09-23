@@ -3,16 +3,40 @@ package main
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/beardedprincess/xcert"
+	_ "github.com/beardedprincess/xcert/extension/venafi/tpp"
+	_ "github.com/beardedprincess/xcert/extension/venafi/vaas"
+)
+
+var (
+	versionBuildTimeStamp string
+	versionString         string
+	commit                string
 )
 
 func main() {
+	// Propogate versions strings to xcert base package to be shared globally
+	xcert.VersionString = versionString
+	xcert.VersionBuildTimeStamp = versionBuildTimeStamp
+	xcert.Commit = commit
+
+	xcert.LogDebug = log.Printf
+	xcert.LogWarn = log.Printf
+
+	fmt.Printf("Version: %v\n\n", xcert.GetFormattedVersionString())
+
+	vi := strings.Join(xcert.ValidIssuers(), ", ")
+	log.Printf("Valid issuers: %v\n", vi)
+
+	log.Printf("%s is valid?: %v", "foo", xcert.IsValidIssuer("foo"))
+
 	conf := &xcert.Config{
 		CertIssuer: "tpp",
-		Config: map[string]string{
+		Config: map[string]any{
 			"policyFolder": "\\VED\\Policy\\Certificates",
-			"accessToken":  "332asdfldkfja;ldfj",
+			"accessToken":  "afadfadsfadsfa",
 		},
 	}
 

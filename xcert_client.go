@@ -1,19 +1,20 @@
+// Copyright (c) BeardedPrincess 2024
+// SPDX-License-Identifier: MPL-2.0
+
 package xcert
 
-import (
-	factorycertissuer "github.com/beardedprincess/xcert/factory/certissuer"
-	"github.com/beardedprincess/xcert/shared/certissuer"
-)
-
 type Client struct {
-	Issuer certissuer.CertIssuer
+	Issuer CertIssuer
 }
 
 func (c *Config) NewClient() (*Client, error) {
-
-	issuer, err := factorycertissuer.NewCertIssuer(certissuer.CertIssuerType(c.CertIssuer), c.Config)
+	const op = "Config.NewClient"
+	issuer, err := NewCertIssuer(CertIssuerType(c.CertIssuer), c.Config)
 	if err != nil {
-		return nil, err
+		return nil, &Error{
+			Op:  op,
+			Err: err,
+		}
 	}
 
 	return &Client{Issuer: issuer}, nil
