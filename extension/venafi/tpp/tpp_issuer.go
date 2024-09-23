@@ -30,9 +30,9 @@ func (i *Issuer) GetName() string {
 }
 
 func (i *Issuer) SubmitRequest(r any) (string, error) {
-	var op = fmt.Sprintf(strFmtComponent, "issuer/submitRequest")
+	const op = "tpp.Issuer.submitRequest"
 	_ = op
-	// xcert.LogDebug("[%s] processing request: %v", op, r)
+	xcert.LogDebug("[%s] processing request: %v", op, r)
 	return fmt.Sprintf("Issued by %s: %s", strLongName, r), nil
 }
 
