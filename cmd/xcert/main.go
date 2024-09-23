@@ -22,8 +22,7 @@ func main() {
 	xcert.VersionBuildTimeStamp = versionBuildTimeStamp
 	xcert.Commit = commit
 
-	xcert.LogDebug = log.Printf
-	xcert.LogWarn = log.Printf
+	// xcert.SetLogger(log.Printf, log.Printf)
 
 	fmt.Printf("Version: %v\n\n", xcert.GetFormattedVersionString())
 

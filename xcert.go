@@ -14,10 +14,29 @@ var (
 )
 
 // Set to any function with a Printf-like signature to enable DEBUG logging
-var LogDebug func(string, ...interface{}) = func(string, ...any) {}
+var logDebug func(string, ...interface{}) = func(string, ...any) {}
 
 // Set to any function with a Printf-like signature to enable WARNING logging
-var LogWarn func(string, ...interface{}) = func(string, ...any) {}
+var logWarn func(string, ...interface{}) = func(string, ...any) {}
+
+func SetLogger(d func(string, ...any), w func(string, ...any)) {
+	if d != nil {
+		logDebug = d
+	}
+	if w != nil {
+		logWarn = w
+	}
+}
+
+func LogWarn(s string, a ...any) {
+	ps := fmt.Sprintf("[WARN][%s]%s", strPackageName, s)
+	logWarn(ps, a...)
+}
+
+func LogDebug(s string, a ...any) {
+	ps := fmt.Sprintf("[DEBUG][%s]%s", strPackageName, s)
+	logDebug(ps, a...)
+}
 
 // GetFormattedVersionString gets a friendly printable string to represent the version
 func GetFormattedVersionString() string {

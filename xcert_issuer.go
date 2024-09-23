@@ -39,8 +39,9 @@ func Register(t CertIssuerType, f CertIssuerFactory) error {
 	const op = "/certIssuer/Register"
 	if f == nil {
 		return &Error{
-			Op:  fmt.Sprintf(strFmtComponent, op),
-			Err: fmt.Errorf("CertIssuer %s failed registration. An invalid factory function was provided", t),
+			Op:      op,
+			Code:    EINVALID,
+			Message: EINVALIDFACTORYFUNC,
 		}
 	}
 
@@ -56,22 +57,23 @@ func Register(t CertIssuerType, f CertIssuerFactory) error {
 }
 
 func NewCertIssuer(t CertIssuerType, conf any) (CertIssuer, error) {
-	const op = "/certIssuer/NewCertIssuer"
+	const op = "xcert.Issuer.NewCertIssuer"
 	if string(t) == "" {
 		return nil, &Error{
-			Op:  fmt.Sprintf(strFmtComponent, op),
-			Err: fmt.Errorf("issuerType cannot be empty"),
+			Op:      op,
+			Code:    EINVALID,
+			Message: ENULLCERTISSUER,
 		}
 	}
 
 	certIssuerFactory, ok := certIssuers[t]
 	if !ok {
 		// Specified cert issuer is not registered
-		availableIssuers := make([]string, 0)
-		for k := range certIssuers {
-			availableIssuers = append(availableIssuers, string(k))
+		return nil, &Error{
+			Op:      op,
+			Code:    EINVALID,
+			Message: fmt.Sprintf(EINVALIDISSUERFMT, t, strings.Join(ValidIssuers(), ", ")),
 		}
-		return nil, fmt.Errorf("invalid issuer type. Must be one of: \"%s\"", strings.Join(availableIssuers, ", "))
 	}
 
 	return certIssuerFactory(conf)
